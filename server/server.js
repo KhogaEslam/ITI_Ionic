@@ -87,7 +87,7 @@ app.post('/api/login', function(req, res) {
  * Handles Registering user
  */
 
-app.post('/register', function(req, res) {
+app.post('/api/register', function(req, res) {
     var user = req.body;
     var promise = userAlreadyExist(user.username, user.password).toArray();
     promise.then(function(data) {
@@ -98,7 +98,7 @@ app.post('/register', function(req, res) {
             db.collection('users').insertOne(user);
             res.send({"code": 1, "status": "seccess", "message": "You've beeen successfully registered"});
         }
-    }); 
+    });
 });
 
 /**
@@ -133,17 +133,17 @@ function reOrderUsernames(users) {
         var tmp = users[0];
         users[0] = users[1];
         users[1] = tmp;
-    } 
+    }
     return users;
 }
- 
+
 
 /**
  * Initiating socket connection
  */
 
 io.on('connection', function(client) {
-    
+
     /**
      * Registering user in system cache
      */
@@ -156,15 +156,15 @@ io.on('connection', function(client) {
     /**
      * Sending private message to and from the two users
      */
-    
+
     client.on('private_message', function(username, message) {
         var users = reOrderUsernames(activeUsers[client.id], username);
         db.collection(users[0] + "LDBDwfZ1IqecOHJrj2z1" + users[1]).insertOne({"msg": message, "msgDate": new Date()}, function(err, res) {
             io.of('/').to(activeUsers[username].socketId).emit(message);
             client.emit('msg_received', {"code": 3, "status": "success", "message": message});
         });
-        
-    })    
+
+    })
 })
 /******************************************************************************/
 /*
@@ -208,9 +208,6 @@ var getBulkPublicChat = function(db, callback) {
       }
    });
 };
-/*
-to use:
-*/
 
 app.post('/api/getall',function(request, response){
     console.log("NODE getall");
