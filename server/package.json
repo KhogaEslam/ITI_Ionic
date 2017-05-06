@@ -1,0 +1,27 @@
+{
+  "name": "ay7aga_server",
+  "version": "1.0.0",
+  "description": "Server for ay7aga",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhogaEslam/ITI_Ionic.git"
+  },
+  "author": "Islam Gamal Khoga, Mohamed Ahmed El-Alem",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KhogaEslam/ITI_Ionic/issues"
+  },
+  "homepage": "https://github.com/KhogaEslam/ITI_Ionic#readme",
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "express": "^4.15.2",
+    "mongod": "^2.0.0",
+    "time-ago": "^0.1.0"
+  }
+}
