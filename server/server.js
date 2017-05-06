@@ -6,14 +6,17 @@ const bodyParser = require('body-parser');
 const MongoClient = require("mongodb").MongoClient;
 const assert = require('assert');
 
+const tableSeperator = "LDBDwfZ1IqecOHJrj2z1";
+
 const url = "mongodb://localhost:27017/chatdb";
 
 var db = null;
 
 //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
 var publicMessages = [];
-var activeUsers = {};
-
+var activeUsers = {
+    "kfdnkndfkndffd": "dfknfdkndkfndf"
+};
 var retPublicChat = [];
 
 app.all('*',function(req,res,next){
@@ -26,6 +29,7 @@ app.all('*',function(req,res,next){
 })
 
 app.use('/node_modules',express.static(__dirname + '/node_modules'));
+app.use('/public',express.static(__dirname + '/public'));
 app.use(bodyParser.json())
 
 MongoClient.connect(url, function(err, dbc) {
@@ -101,6 +105,7 @@ app.post('/api/register', function(req, res) {
     var promise = userAlreadyExist(user.username, user.password).toArray();
     promise.then(function(data) {
         if(data.length) {
+            console.log(data);
             res.send({"code": 2, "status": "failed", "message": "username already exists"});
         }
         else {
@@ -108,6 +113,23 @@ app.post('/api/register', function(req, res) {
             res.send({"code": 1, "status": "seccess", "message": "You've beeen successfully registered"});
         }
     });
+});
+
+app.post('/api/active', function(req, res) {
+    var users = [];
+    var username = req.body.username;
+    for(var key in activeUsers) {
+        if(!activeUsers[key].socket && username != activeUsers[key] != username) {
+            users.push(key);
+        }
+    }
+    console.log(activeUsers);
+    if(users.length) {
+        res.send({"code": 5, "status": "success", "message": {"users": users}});
+    }
+    else {
+        res.send({"code": 4, "status": "failed", "message": "No active users"});
+    }
 });
 
 /**
@@ -159,8 +181,12 @@ io.on('connection', function(client) {
 
     client.on('logged', function(username) {
         activeUsers[username] = {"socketId": client.id};
-        activeUsers[client.id] = {"username": username};
+        activeUsers[client.id] = {"username": username, "socket": true};
     });
+
+    client.on('private_chat_initiated', function(username) {
+        
+    })
 
     /**
      * Sending private message to and from the two users
@@ -168,24 +194,30 @@ io.on('connection', function(client) {
 
     client.on('private_message', function(username, message) {
         var users = reOrderUsernames(activeUsers[client.id], username);
-        db.collection(users[0] + "LDBDwfZ1IqecOHJrj2z1" + users[1]).insertOne({"msg": message, "msgDate": new Date()}, function(err, res) {
+        db.collection(users[0] + tableSeperator + users[1]).insertOne({"msg": message, "msgDate": new Date()}, function(err, res) {
             io.of('/').to(activeUsers[username].socketId).emit(message);
             client.emit('msg_received', {"code": 3, "status": "success", "message": message});
         });
 
-    })
+    });
 
-        /**
+    /**
      * Sending public message to and from the two users
      */
 
-    client.on('public_message', function(username, message) {    
+    client.on('public_message', function(username, message) {
+        console.log(username, message);
         var msg = {'username' : username, 'msgContent' : message, 'msgTime' : new Date()};    
         savePublicChat(msg);
         publicMessages.push(msg);
         client.broadcast.emit('messages',publicMessages);
         client.emit('messages',publicMessages); 
-    })
+    });
+
+    client.on('logout', function(username) {
+        delete activeUsers[client.id];
+        delete activeUsers[username];
+    });
 })
 /******************************************************************************/
 /*
