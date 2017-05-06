@@ -2,7 +2,11 @@
 /ayesm/node_modules
 /ayesm/platforms
 /ayesm/plugins
+/ayesm/hooks
+/ayesm/scss
 
 ayesm/node_modules/
 ayesm/platforms/
 ayesm/plugins/
+ayesm/hooks/
+ayesm/scss/
