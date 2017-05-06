@@ -71,7 +71,7 @@ app.post('/api/login', function(req, res) {
  * Handles Registering user
  */
 
-app.post('/register', function(req, res) {
+app.post('/api/register', function(req, res) {
     var user = req.body;
     var promise = userAlreadyExist(user.username, user.password).toArray();
     promise.then(function(data) {
