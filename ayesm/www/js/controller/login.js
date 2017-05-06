@@ -1,4 +1,4 @@
-angular.module('chatApp').controller('login', function($scope, $state, $ionicPopup, User) {
+angular.module('chatApp').controller('login', function($rootScope,$scope, $state, $ionicPopup, User) {
   $scope.user = {};
   $scope.check = {};
   $scope.login = function(valid) {
