@@ -1,0 +1,35 @@
+<ion-view view-title="Os App">
+  <ion-content class="homepage">
+    <div class="overlay">
+      <div class="contents">
+
+        <div class="list">
+          <form novalidate ng-submit="submited=true ;login(loginForm.$valid)" name="loginForm">
+            <label class="item item-input item-stacked-label">
+        <span class="input-label">Name</span>
+        <input type="text" ng-model="user.username" name="user_name" required>
+        <p class="error" ng-if="submited && loginForm.user_name.$error.required">Enter user name </p>
+
+      </label>
+            <label class="item item-input item-stacked-label">
+        <span class="input-label">Password</span>
+        <input type="password" ng-model="user.password" name="pass" required>
+        <p class="error" ng-if="submited && loginForm.pass.$error.required">Enter your password </p>
+
+      </label>
+            <div class="remmember">
+              <ion-list>
+                <ion-checkbox ng-model="check.remember">Remember me</ion-checkbox>
+              </ion-list>
+            </div>
+
+            <button class="button button-block button-positive">
+        Log in
+      </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </ion-content>
+</ion-view>

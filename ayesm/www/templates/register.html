@@ -1,0 +1,55 @@
+<ion-view view-title="">
+  <ion-content class="homepage">
+    <div class="overlay">
+      <div class="contents">
+
+        <div class="list">
+          <form novalidate ng-submit="submited=true ; signup(registerForm.$valid)" name="registerForm">
+
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">User Name</span>
+              <input type="text" ng-model="user.username" required name="user_name">
+              <p class="error" ng-if="submited && registerForm.user_name.$error.required">Enter your name </p>
+            </label>
+
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">First Name</span>
+              <input type="text" ng-model="user.first_username" required name="user_first_name">
+              <p class="error" ng-if="submited && registerForm.user_first_name.$error.required">Enter your first name </p>
+            </label>
+
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Last Name</span>
+              <input type="text" ng-model="user.last_username" required name="user_last_name">
+              <p class="error" ng-if="submited && registerForm.user_last_name.$error.required">Enter your last name </p>
+            </label>
+
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Email</span>
+              <input type="email" ng-model="user.email" required name="email">
+              <p class="error" ng-if="submited && registerForm.email.$error.required">Enter your email </p>
+              <p class="error" ng-if="submited && registerForm.email.$error.email">Enter valide email </p>
+            </label>
+
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Password</span>
+              <input type="password" ng-model="user.password" required name="pass">
+              <p class="error" ng-if="submited && registerForm.pass.$error.required">Enter your password </p>
+              <p class="error" ng-if="submited && pass_error">password must be more than 4 char</p>
+            </label>
+
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Re-Password</span>
+              <input type="password" ng-model="user.repassword" required name="repass">
+              <p class="error" ng-if="submited && registerForm.repass.$error.required">Retype password </p>
+              <p class="error" ng-if="submited && user.password!=user.repassword">confirm doesn't match</p>
+            </label>
+
+            <button class="button button-block button-positive">Register</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
