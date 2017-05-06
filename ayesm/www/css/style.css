@@ -66,3 +66,7 @@ border-bottom: 1px solid #fff;
 .homepage .item-thumbnail-left .item-content .item-image{
     left: 20px;
 }
+
+.homepage h2{
+  color: white
+}

@@ -11,7 +11,8 @@ angular.module('chatApp').config(function($stateProvider) {
 
     .state('home', {
       url: '',
-      templateUrl: 'templates/home.html'
+      templateUrl: 'templates/home.html',
+      controller: 'home',
     })
 
     .state('login', {
@@ -47,7 +48,7 @@ angular.module('chatApp').config(function($stateProvider) {
     })
 
     .state('app.activeUser', {
-      url: '/activeUser',
+      url: '/activeuser',
       views: {
         "pageContent": {
           templateUrl: "templates/activeUser.html",
