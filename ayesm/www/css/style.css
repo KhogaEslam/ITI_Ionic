@@ -59,6 +59,10 @@ border-bottom: 1px solid #fff;
   color: red;
 }
 
-.homepage lable{
+.homepage .item-thumbnail-left{
   background: transparent;
+}
+
+.homepage .item-thumbnail-left .item-content .item-image{
+    left: 20px;
 }

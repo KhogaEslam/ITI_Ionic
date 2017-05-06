@@ -3,14 +3,13 @@ angular.module("chatApp").factory("User", function($http, $q) {
     checkExisting: function(user) {
       var def = $q.defer()
       $http({
-        url: "",
-        method: 'GET',
+        url: "http://172.16.5.7:8080/api/login",
+        method: 'POST',
         data: user
       }).then(function(res) {
         console.log(res);
-        if (res.data.length) {
-          def.resolve(res.data)
-        }
+          def.resolve(res)
+
       }, function(err) {
         def.reject(err);
       })
@@ -18,23 +17,9 @@ angular.module("chatApp").factory("User", function($http, $q) {
     },
     insertUser: function(userData) {
       $http({
-        url: "",
+        url: "http://172.16.5.7:8080/api/register",
         method: "POST",
         data: userData
-      }).then(function(res) {
-        if (res.status) {
-          console.log(res.message);
-        }
-        console.log(res);
-      }, function(err) {
-        console.log(err);
-      })
-    },
-    login: function(user) {
-      $http({
-        url: "",
-        method: "POST",
-        data: user
       }).then(function(res) {
         if (res.status) {
           console.log(res.message);

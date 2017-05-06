@@ -19,15 +19,17 @@
   <ion-side-menu side="right">
     <ion-list>
       <ion-item menu-close>
-        welcome ,{{username}}
+        welcome ,{{first_username}}{{last_username}}
       </ion-item>
-      <ion-item ui-sref="home" menu-close>
-        Home
+      <ion-item ui-sref="app.activeUser" menu-close>
+      Active User
       </ion-item>
       <ion-item ui-sref="app.about" menu-close>
         About
       </ion-item>
-    
+      <ion-item ui-sref="app.chat" menu-close>
+        Chat
+      </ion-item>
       <ion-item ng-click="logout()" menu-close>
         Logout
       </ion-item>
