@@ -1,7 +1,5 @@
 angular.module('chatApp').controller("activeUser",function($scope,$http,Chat,$state,$rootScope,$ionicLoading){
 $ionicLoading.show()
-
-
 //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
 
 Chat.getAllActiveUser($rootScope.username).then(function(data){

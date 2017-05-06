@@ -13,8 +13,7 @@ angular.module('chatApp').controller('login', function($rootScope,$scope, $state
           if ($scope.check.remember) {
             localStorage.setItem('remember', JSON.stringify($scope.check.remember));
           }
-          $rootScope.username = username;
-          console.log('username1', $rootScope.username);
+          localStorage.setItem('username', JSON.stringify(username));
           $state.go('app.activeUser')
         } else {
           $ionicPopup.show({

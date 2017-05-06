@@ -16,6 +16,15 @@ var activeUsers = {};
 
 var retPublicChat = [];
 
+app.all('*',function(req,res,next){
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,POST');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  next();
+
+})
+
 app.use('/node_modules',express.static(__dirname + '/node_modules'));
 app.use(bodyParser.json())
 
@@ -164,6 +173,18 @@ io.on('connection', function(client) {
             client.emit('msg_received', {"code": 3, "status": "success", "message": message});
         });
 
+    })
+
+        /**
+     * Sending public message to and from the two users
+     */
+
+    client.on('public_message', function(username, message) {    
+        var msg = {'username' : username, 'msgContent' : message, 'msgTime' : new Date()};    
+        savePublicChat(msg);
+        publicMessages.push(msg);
+        client.broadcast.emit('messages',publicMessages);
+        client.emit('messages',publicMessages); 
     })
 })
 /******************************************************************************/
