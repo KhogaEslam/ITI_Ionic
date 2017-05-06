@@ -32,6 +32,8 @@ background-position: center;
 
 .homepage .item{
   border: 0;
+  background: transparent;
+  color: white;
 }
 
 .homepage .item-input{
@@ -68,5 +70,5 @@ border-bottom: 1px solid #fff;
 }
 
 .homepage h2{
-  color: white
+  color: white;
 }
