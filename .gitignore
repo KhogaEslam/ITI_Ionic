@@ -1,1 +1,8 @@
 /server/node_modules
+/ayesm/node_modules
+/ayesm/platforms
+/ayesm/plugins
+
+ayesm/node_modules/
+ayesm/platforms/
+ayesm/plugins/
