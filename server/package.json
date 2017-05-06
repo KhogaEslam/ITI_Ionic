@@ -21,8 +21,11 @@
     "nodemon": "^1.11.0"
   },
   "dependencies": {
+    "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "mongod": "^2.0.0",
+    "mongodb": "^2.2.26",
+    "socket.io": "^1.7.3",
     "time-ago": "^0.1.0"
   }
 }
