@@ -10,11 +10,13 @@ const url = "mongodb://localhost:27017/chatdb";
 
 var db = null;
 
+<<<<<<< HEAD
 //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
 var publicMessages = [];
-var activeUsers = {};
-
 var retPublicChat = [];
+=======
+var activeUsers = {};
+>>>>>>> 9ee595cbb6935a8934a0fcfe666fc68f92129d21
 
 app.use('/node_modules',express.static(__dirname + '/node_modules'));
 app.use(bodyParser.json())
@@ -27,6 +29,7 @@ MongoClient.connect(url, function(err, dbc) {
         console.log("Connected successfully");
         db = dbc;
         server.listen(8080);
+<<<<<<< HEAD
 
         /*Just for testing*/
         // savePublicChat({'username' : 'username1', 'msgContent' : 'msgContent1', 'msgTime' : 'msgTime1'});
@@ -38,6 +41,8 @@ MongoClient.connect(url, function(err, dbc) {
         // publicMessages.push({'username' : 'username5', 'msgContent' : 'msgContent5', 'msgTime' : 'msgTime5'});
         // publicMessages.push({'username' : 'username6', 'msgContent' : 'msgContent6', 'msgTime' : 'msgTime6'});
         // saveBulkPublicChat();
+=======
+>>>>>>> 9ee595cbb6935a8934a0fcfe666fc68f92129d21
     }
 })
 
@@ -53,9 +58,13 @@ function registrationCheck(username, email) {
 
 
 /**
+<<<<<<< HEAD
+ *
+=======
  * Checks if user already registered in our database
  * @param string, string (optional)
  * @return boolean (true for registered, false for unregistered)
+>>>>>>> 9ee595cbb6935a8934a0fcfe666fc68f92129d21
  */
 
 function userAlreadyExist(username, password = null) {
@@ -148,24 +157,7 @@ io.on('connection', function(client) {
      * Registering user in system cache
      */
 
-    client.on('logged', function(username) {
-        activeUsers[username] = {"socketId": client.id};
-        activeUsers[client.id] = {"username": username};
-    });
-
-    /**
-     * Sending private message to and from the two users
-     */
-    
-    client.on('private_message', function(username, message) {
-        var users = reOrderUsernames(activeUsers[client.id], username);
-        db.collection(users[0] + "LDBDwfZ1IqecOHJrj2z1" + users[1]).insertOne({"msg": message, "msgDate": new Date()}, function(err, res) {
-            io.of('/').to(activeUsers[username].socketId).emit(message);
-            client.emit('msg_received', {"code": 3, "status": "success", "message": message});
-        });
-        
-    })    
-})
+<<<<<<< HEAD
 /******************************************************************************/
 /*
 * Save One Public Message
@@ -219,3 +211,23 @@ app.post('/api/getall',function(request, response){
           response.send(retPublicChat);
       });
 });
+=======
+    client.on('logged', function(username) {
+        activeUsers[username] = {"socketId": client.id};
+        activeUsers[client.id] = {"username": username};
+    });
+
+    /**
+     * Sending private message to and from the two users
+     */
+    
+    client.on('private_message', function(username, message) {
+        var users = reOrderUsernames(activeUsers[client.id], username);
+        db.collection(users[0] + "LDBDwfZ1IqecOHJrj2z1" + users[1]).insertOne({"msg": message, "msgDate": new Date()}, function(err, res) {
+            io.of('/').to(activeUsers[username].socketId).emit(message);
+            client.emit('msg_received', {"code": 3, "status": "success", "message": message});
+        });
+        
+    })    
+})
+>>>>>>> 9ee595cbb6935a8934a0fcfe666fc68f92129d21
