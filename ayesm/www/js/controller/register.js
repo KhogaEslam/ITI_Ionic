@@ -7,9 +7,10 @@ angular.module('chatApp').controller('register', function($scope, $state, $ionic
         $scope.repass_error = false;
 
         User.checkExisting().then(function(data) {
-          console.log(data);
-          var exist =data.code //======>
-          if (exist==2) {
+          console.log('factory',data);
+          var exist = data.code //======>
+          console.log("exist: ",exist);
+          if (exist == 2) {
             User.insertUser($scope.user);
             $state.go('login')
           } else {

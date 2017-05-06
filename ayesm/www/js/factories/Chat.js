@@ -2,12 +2,12 @@ angular.module('chatApp').factory("Chat",function($q,$http){
 
 return {
 
-  getAllActiveUser:function(){
-
+  getAllActiveUser:function(username){
   			var def =$q.defer();
   			$http({
-  				url:'' ,
-  				method:'GET'
+  				url:'http://172.16.5.7:8080/api/active' ,
+  				method:'POST',
+          data: username,
 
   			}).then(function(res){
   				// console.log(res);

@@ -1,4 +1,4 @@
-angular.module('chatApp').controller('login', function($scope, $state, $ionicPopup, User) {
+angular.module('chatApp').controller('login', function($rootScope,$scope, $state, $ionicPopup, User) {
   $scope.user = {};
   $scope.check = {};
   $scope.login = function(valid) {
@@ -13,6 +13,8 @@ angular.module('chatApp').controller('login', function($scope, $state, $ionicPop
           if ($scope.check.remember) {
             localStorage.setItem('remember', JSON.stringify($scope.check.remember));
           }
+          $rootScope.username = username;
+          console.log('username1', $rootScope.username);
           $state.go('app.activeUser')
         } else {
           $ionicPopup.show({

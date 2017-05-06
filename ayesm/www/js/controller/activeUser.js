@@ -4,8 +4,9 @@ $ionicLoading.show()
 
 //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
 
-Chat.getAllActiveUser().then(function(data){
-  console.log(data);
+Chat.getAllActiveUser($rootScope.username).then(function(data){
+  //console.log(data);
+  console.log('username2', $rootScope.username);
   $scope.activeusers=data;
 
 $ionicLoading.hide()
@@ -14,6 +15,7 @@ $ionicLoading.hide()
   alert(err);
 
 });
+
 
 
   });

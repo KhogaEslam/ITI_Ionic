@@ -7,8 +7,8 @@ angular.module("chatApp").factory("User", function($http, $q) {
         method: 'POST',
         data: user
       }).then(function(res) {
-        console.log(res);
-          def.resolve(res)
+        console.log("cont",res);
+          def.resolve(res.data)
 
       }, function(err) {
         def.reject(err);
