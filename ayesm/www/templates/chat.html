@@ -2,29 +2,29 @@
   <ion-content>
     <div class="list">
 
-      <div class="item item-avatar">
+      <!-- <div class="item item-avatar">
         <img src="img/active.png">
         <h2>my name</h2>
         <p>Marty McFlygfkgjfgkjfkgjfkgjfkgjfkgjkfjgkfjgkfgkf</p>
         <p> At :November 05, 1955</p>
+      </div> -->
+
+
+<!-- {{activeusersmessages.data}} -->
+      <div class="item item-avatar" ng-repeat="activeuser in activeusersmessages">
+        <img src="img/active.png">
+        <h2>{{activeuser.username}}</h2>
+        <h2> Message :{{activeuser.msgContent}} </h2>
+        <p> At :{{activeuser.msgTime}}</p>
       </div>
-
-
-
-      <!-- <div class="item item-avatar" ng-repeat="activeuser in activeusers">
-      <img src="img/active.png">
-    <h2>{{activeuser.username}}</h2>
-  <h2> Message :{{activeuser.msgContent}} </h2>
-  <p> At :{{activeuser.msgTime}}</p>
-</div> -->
       <br>
 
-      <textarea rows="4" cols="42" style="border:solid 2px blue;" placeholder="Enter your message">
+      <textarea rows="4" cols="42" style="border:solid 2px blue;" placeholder="Enter your message" ng-model="chat.message">
 
  </textarea>
 
 
-      <button class="button icon-left  ion-paper-airplane button-positive button-block">Send message</button>
+      <button class="button icon-left  ion-paper-airplane button-positive button-block" ng-click="sendMessage()">Send message</button>
 
 
     </div>

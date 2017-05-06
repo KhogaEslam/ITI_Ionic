@@ -42,7 +42,7 @@ angular.module('chatApp').config(function($stateProvider) {
       views: {
         "pageContent": {
           templateUrl: "templates/chat.html",
-          controller: "activeUser"
+          controller: "publicChat"
         }
       }
     })

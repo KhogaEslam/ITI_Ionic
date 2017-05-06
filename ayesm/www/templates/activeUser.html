@@ -2,10 +2,10 @@
   <ion-content>
 <div class="list">
 
-<a class="item item-avatar" ui-sref='privateChat(username:{activeuser.username})' ng-repeat="activeuser in activeusers">
-<a class="item item-avatar">
+<a class="item item-avatar" ui-sref='privateChat({"username":activeuser})' ng-repeat="activeuser in activeusers track by $index">
   <img src="img/active.png">
-  <h2>{{activeusers.username}}</h2>
+  <h2>{{activeuser}}</h2>
+
   <p> Active Now</p>
 </a>
 

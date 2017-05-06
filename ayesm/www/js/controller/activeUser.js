@@ -1,17 +1,18 @@
 angular.module('chatApp').controller("activeUser",function($scope,$http,Chat,$state,$rootScope,$ionicLoading){
 $ionicLoading.show()
 //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
-
-Chat.getAllActiveUser($rootScope.username).then(function(data){
+var username= localStorage.getItem("username");
+Chat.getAllActiveUser({username: username}).then(function(data){
   //console.log(data);
-  console.log('username2', $rootScope.username);
-  $scope.activeusers=data;
+  console.log('username2',username);
+  $scope.activeusers=data.message.users;
+  console.log($scope.activeusers);
 
 $ionicLoading.hide()
 } , function(err){
   console.log(err);
-  alert(err);
-
+  console.log(JSON.stringify(err));
+  $ionicLoading.hide();
 });
 
 
