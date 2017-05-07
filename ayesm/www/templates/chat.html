@@ -1,33 +1,23 @@
 <ion-view view-title="Chat">
-  <ion-content overflow-scroll="true">
-    <div class="list">
-
-      <!-- <div class="item item-avatar">
-        <img src="img/active.png">
-        <h2>my name</h2>
-        <p>Marty McFlygfkgjfgkjfkgjfkgjfkgjfkgjkfjgkfjgkfgkf</p>
-        <p> At :November 05, 1955</p>
-      </div> -->
-
-
-<!-- {{activeusersmessages.data}}  -->
-     <div class="item item-avatar" ng-repeat="activeuser in activeusersmessages">
-        <img src="img/active.png">
-        <h2>{{activeuser.username}}</h2>
-        <h2> Message :{{activeuser.msgContent}} </h2>
-        <p> At :{{activeuser.msgTime}}</p>
-      </div>
-      <br>
-
-      <textarea rows="4" cols="42" style="border:solid 2px blue;" placeholder="Enter your message" ng-model="chat.message">
-
- </textarea>
-
-
-      <button class="button icon-left  ion-paper-airplane button-positive button-block" ng-click="sendMessage()">Send message</button>
-
-
-    </div>
-
+  <ion-content scroll="false" class="padding">
+     <ion-scroll direction="y" style="width:100%;height:90%;">
+        <ion-list>
+            <ion-item  ng-repeat="activeuser in activeusersmessages track by $index">
+              <div class="item item-avatar">
+                <img src="img/active.png">
+                <h2 ng-if="activeuser.username != currentuser "> {{activeuser.username}}</h2>
+                <h2 ng-if="activeuser.username == currentuser ">Me</h2>
+                <h2>Said: {{activeuser.msgContent}} </h2>
+                <p>{{activeuser.msgDate}}</p>
+              </div>
+            </ion-item>
+        </ion-list>
+     </ion-scroll>
+     <ion-scroll scrol style="width:100%;height:25%;">
+       <textarea rows="3" style="width:83%; border:solid 2px blue; display: inline-block" placeholder="What is in your mind?" ng-model="chat.message">
+        </textarea>
+       <button style="height:38%; width:11%;" class="button icon-left  ion-paper-airplane button-positive" ng-click="sendMessage()">
+       </button>
+     </ion-scroll>
+  </ion-content>
 </ion-view>
-</ion-content>

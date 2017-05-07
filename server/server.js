@@ -5,6 +5,7 @@ const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
 const MongoClient = require("mongodb").MongoClient;
 const assert = require('assert');
+const ta = require('time-ago')();
 
 const tableSeperator = "LDBDwfZ1IqecOHJrj2z1";
 
@@ -14,10 +15,25 @@ var db = null;
 
 //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
 var publicMessages = [];
-var activeUsers = {
-    "kfdnkndfkndffd": "dfknfdkndkfndf"
-};
+var activeUsers = {};
 var retPublicChat = [];
+
+var getBulkPublicChat = function(db, callback) {
+  console.log('get bulck');
+   var cursor = db.collection('publicChat').find();
+   retPublicChat = [];
+   cursor.each(function(err, chat) {
+      assert.equal(err, null);
+      if (chat != null) {
+        chat.msgDate = ta.ago(chat.msgTime);
+        retPublicChat.push(chat);
+        console.log("public chat", chat);
+      } else {
+         callback();
+      }
+   });
+};
+
 
 app.all('*',function(req,res,next){
   res.header('Access-Control-Allow-Origin', '*');
@@ -40,7 +56,9 @@ MongoClient.connect(url, function(err, dbc) {
         console.log("Connected successfully");
         db = dbc;
         server.listen(8080);
-
+        getBulkPublicChat(db, function() {
+            publicMessages = retPublicChat;
+        });
         /*Just for testing*/
         // savePublicChat({'username' : 'username1', 'msgContent' : 'msgContent1', 'msgTime' : 'msgTime1'});
         // savePublicChat({'username' : 'username2', 'msgContent' : 'msgContent2', 'msgTime' : 'msgTime2'});
@@ -54,7 +72,18 @@ MongoClient.connect(url, function(err, dbc) {
     }
 })
 
+/******************************************************************************/
+/*
+* get all chat messages
+*/
 
+app.post('/api/getall',function(request, response){
+    console.log("NODE getall");
+      getBulkPublicChat(db, function() {
+          //db.close();
+          response.send(retPublicChat);
+      });
+});
 
 function loginCheck(username, password) {
     return this.username == username && this.password == password;
@@ -62,6 +91,19 @@ function loginCheck(username, password) {
 
 function registrationCheck(username, email) {
     return this.username == username || this.password == password;
+}
+
+function getActiveUsers(username) {
+    var users = {};
+    for(var key in activeUsers) {
+        if(!activeUsers[key].socket) {
+            console.log(key);
+            users[key] = {};
+            users[key].username = key;
+            users[key].status = "active";
+        }
+    }
+    return users;
 }
 
 
@@ -79,6 +121,10 @@ function userAlreadyExist(username, password = null) {
     return db.collection('users').find(condition);
 }
 
+function userAlreadyLogged(username) {
+    return activeUsers[username] != undefined;
+}
+
 /**
  * Handles Login user
  */
@@ -86,7 +132,11 @@ function userAlreadyExist(username, password = null) {
 app.post('/api/login', function(req, res) {
     var user = req.body;
     var promise = userAlreadyExist(user.username, user.password).toArray();
-    promise.then(function(data) {
+    if(userAlreadyLogged(user.username)) {
+        res.send({"code": 10, "status": "failed", "message": "User already logged in"})
+    }
+    else {
+        promise.then(function(data) {
         if(data.length) {
             res.send({"code": 1, "status": "success", "message": "You're successfully logged in"});
         }
@@ -94,6 +144,8 @@ app.post('/api/login', function(req, res) {
             res.send({"code": 2, "status": "failed", "message": "Invalid credintials"});
         }
     })
+    }
+    
 });
 
 /**
@@ -102,7 +154,7 @@ app.post('/api/login', function(req, res) {
 
 app.post('/api/register', function(req, res) {
     var user = req.body;
-    var promise = userAlreadyExist(user.username, user.password).toArray();
+    var promise = userAlreadyExist(user.username).toArray();
     promise.then(function(data) {
         if(data.length) {
             console.log(data);
@@ -116,19 +168,17 @@ app.post('/api/register', function(req, res) {
 });
 
 app.post('/api/active', function(req, res) {
+    console.log(JSON.stringify(activeUsers, null, 2))
     var users = [];
     var username = req.body.username;
-    for(var key in activeUsers) {
-        if(!activeUsers[key].socket && username != activeUsers[key] != username) {
-            users.push(key);
-        }
-    }
-    console.log(activeUsers);
-    if(users.length) {
+    var users = getActiveUsers();
+    console.log('/api/active', activeUsers);
+    console.log("Object length:", Object.keys(users).length)
+    if(Object.keys(users).length > 0) {
         res.send({"code": 5, "status": "success", "message": {"users": users}});
     }
     else {
-        res.send({"code": 4, "status": "failed", "message": "No active users"});
+        res.send({"code": 4, "status": "failed", "message": {"users": users}});
     }
 });
 
@@ -186,6 +236,17 @@ app.post("/api/private_chat", function(req, res) {
     
 })
 
+app.post('/api/userdata', function(req, res) {
+    var username = req.body.username;
+    db.collection('users').find({"username": username}).toArray().then(function(data) {
+        console.log("/api/userdata", data);
+        res.send({"code": 8, "status": "success", "message": data});
+    }, function(err) {
+        console.log("/api/userdata", err);
+        res.send({"code": 9, "status": "failed", "message": "Failed to retrieve user"});
+    });
+})
+
 
 /**
  * Initiating socket connection
@@ -198,8 +259,10 @@ io.on('connection', function(client) {
      */
 
     client.on('logged', function(username) {
+        console.log(username);
         activeUsers[username] = {"socketId": client.id};
         activeUsers[client.id] = {"username": username, "socket": true};
+        client.broadcast.emit('new_user', getActiveUsers());
     });
 
     client.on('private_chat_initiated', function(username) {
@@ -228,14 +291,27 @@ io.on('connection', function(client) {
         var msg = {'username' : username, 'msgContent' : message, 'msgTime' : new Date()};    
         savePublicChat(msg);
         publicMessages.push(msg);
-        client.broadcast.emit('messages',publicMessages);
-        client.emit('messages',publicMessages); 
+        client.broadcast.emit('messages', msg);
+        client.emit('messages', msg); 
     });
 
     client.on('logout', function(username) {
         delete activeUsers[client.id];
         delete activeUsers[username];
+        client.broadcast.emit('new_user', getActiveUsers());
+        console.log("User", username, "logged out");
+        console.log(activeUsers);
     });
+
+    client.on('disconnect', function() {
+        if(activeUsers[client.id]) {
+            delete activeUsers[activeUsers[client.id].username];
+        }
+        delete activeUsers[client.id];
+        client.broadcast.emit('new_user', getActiveUsers());
+        console.log("User disconnected");
+        console.log(activeUsers);
+    })
 })
 /******************************************************************************/
 /*
@@ -263,29 +339,3 @@ function saveBulkPublicChat(){
       publicMessages = [];
   });
 }
-
-/******************************************************************************/
-/*
-* get all chat messages
-*/
-var getBulkPublicChat = function(db, callback) {
-  console.log('get bulck');
-   var cursor = db.collection('publicChat').find();
-   cursor.each(function(err, chat) {
-      assert.equal(err, null);
-      if (chat != null) {
-          retPublicChat = [];
-         retPublicChat.push(chat);
-      } else {
-         callback();
-      }
-   });
-};
-
-app.post('/api/getall',function(request, response){
-    console.log("NODE getall");
-      getBulkPublicChat(db, function() {
-          //db.close();
-          response.send(retPublicChat);
-      });
-});
