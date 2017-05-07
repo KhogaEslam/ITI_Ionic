@@ -34,10 +34,8 @@ return {
               $http({
                 url:'http://172.16.5.7:8080/api/getall' ,
                 method:'POST',
-
-
               }).then(function(res){
-                console.log(res);
+                console.log("all message",res);
                 if(res.data.length){
                   def.resolve(res.data)
                 }else{

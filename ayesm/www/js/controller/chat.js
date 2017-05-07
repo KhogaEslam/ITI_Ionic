@@ -1,7 +1,7 @@
 angular.module('chatApp').controller("publicChat", function($scope, $http, Chat, $state, $rootScope, $ionicLoading) {
   $scope.chat = {};
   //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
-  var username = localStorage.getItem("username");
+  var username = JSON.parse(localStorage.getItem("username"));
   // Chat.StartPublicChat(username,"");
   $scope.sendMessage = function() {
     // console.log($scope.chat.message);
@@ -11,8 +11,9 @@ angular.module('chatApp').controller("publicChat", function($scope, $http, Chat,
   }
 
   Chat.getAllMessage().then(function(data) {
-    console.log(data);
+    console.log("data", data);
     $scope.activeusersmessages = data;
+    $scope.currentuser = username;
 
   }, function(err) {
     console.log(err);
