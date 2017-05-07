@@ -50,7 +50,12 @@ return {
               })
               return def.promise ;
 
-            }
+            },
+
+            // StartPrivateChat:function(username,message){
+            //     socket.emit("private_message",username,message);
+            //
+            //   }
 
 
 }})

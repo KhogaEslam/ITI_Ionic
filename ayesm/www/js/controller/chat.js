@@ -21,5 +21,13 @@ console.log(data);
   });
 
 
+  // private_message
+  // $scope.sendPrivateMessage = function() {
+  //
+  //   Chat.StartPrivateChat(username, $scope.chat.message);
+  //   $scope.chat.message = "";
+  //
+  // }
+
 
 });
