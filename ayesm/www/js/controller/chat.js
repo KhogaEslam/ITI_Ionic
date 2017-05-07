@@ -11,7 +11,7 @@ angular.module('chatApp').controller("publicChat", function($scope, $http, Chat,
   }
 
   Chat.getAllMessage().then(function(data) {
-console.log(data);
+    console.log(data);
     $scope.activeusersmessages = data;
 
   }, function(err) {

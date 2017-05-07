@@ -168,6 +168,24 @@ function reOrderUsernames(users) {
     return users;
 }
 
+/**
+ * Retrieving all private messages between 2 users
+ */
+
+app.post("/api/private_chat", function(req, res) {
+    var from = req.body.from;
+    var to = req.body.to;
+    var user = reOrderUsernames([from, to]);
+    console.log(user[0] + tableSeperator + user[1])
+    db.collection(user[0] + tableSeperator + user[1]).find().toArray().then(function(data) {
+        res.send({"code": 7, "status": "success", "message": {"messages": data}});
+    }, function(err) {
+        console.log(err);
+        res.send({"code": 6, "status": "failed", "message": err})
+    });
+    
+})
+
 
 /**
  * Initiating socket connection
@@ -242,6 +260,7 @@ function saveBulkPublicChat(){
   .then(function(result) {
     // process result
     //console.log(result);
+      publicMessages = [];
   });
 }
 
@@ -255,6 +274,7 @@ var getBulkPublicChat = function(db, callback) {
    cursor.each(function(err, chat) {
       assert.equal(err, null);
       if (chat != null) {
+          retPublicChat = [];
          retPublicChat.push(chat);
       } else {
          callback();
