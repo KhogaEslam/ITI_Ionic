@@ -242,7 +242,7 @@ function saveBulkPublicChat(){
   .then(function(result) {
     // process result
     //console.log(result);
-      publicMessages = {};
+      publicMessages = [];
   });
 }
 
@@ -256,6 +256,7 @@ var getBulkPublicChat = function(db, callback) {
    cursor.each(function(err, chat) {
       assert.equal(err, null);
       if (chat != null) {
+          retPublicChat = [];
          retPublicChat.push(chat);
       } else {
          callback();
