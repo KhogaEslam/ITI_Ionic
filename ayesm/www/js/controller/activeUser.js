@@ -1,7 +1,8 @@
 angular.module('chatApp').controller("activeUser",function($scope,$http,Chat,$state,$rootScope,$ionicLoading){
 $ionicLoading.show()
 //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
-var username= localStorage.getItem("username");
+var username= JSON.parse(localStorage.getItem("username"));
+socket.emit('logged',username);
 Chat.getAllActiveUser({username: username}).then(function(data){
   //console.log(data);
   console.log('username2',username);
@@ -15,6 +16,8 @@ $ionicLoading.hide()
   $ionicLoading.hide();
 });
 
-
+socket.on('new-user',function(activeusers){
+  $scope.activeusers=activeusers;
+})
 
   });
