@@ -26,7 +26,6 @@ return {
   		},
       StartPublicChat:function(username,message){
           socket.emit("public_message",username,message);
-
         },
 
         getAllMessage:function(){
@@ -50,7 +49,30 @@ return {
               })
               return def.promise ;
 
-            }
+            },
+
+      getPrivateMessages(data){
+        var def =$q.defer();
+        $http({
+          url:'http://172.16.5.7:8080/api/private_chat' ,
+          method:'POST',
+          data: data
+
+        }).then(function(res){
+          console.log(res);
+          if(res.data.length){
+            def.resolve(res.data)
+          }else{
+            def.reject('there is no private data ')
+          }
+
+        },function(err){
+          // console.log(err);
+          def.reject(err);
+        })
+        return def.promise ;
+
+      }
 
 
 }})

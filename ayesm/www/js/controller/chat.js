@@ -11,7 +11,7 @@ angular.module('chatApp').controller("publicChat", function($scope, $http, Chat,
   }
 
   Chat.getAllMessage().then(function(data) {
-console.log(data);
+    console.log(data);
     $scope.activeusersmessages = data;
 
   }, function(err) {
@@ -20,6 +20,16 @@ console.log(data);
 
   });
 
+  $scope.startPrivate = function(){
+    Chat.getPrivateMessages().then(function(data) {
+      console.log(data);
+      $scope.activeusersmessages = data;
 
+    }, function(err) {
+      console.log(err);
+      console.log(JSON.stringify(err));
+
+    });
+  }
 
 });
