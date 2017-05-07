@@ -48,10 +48,10 @@ angular.module('chatApp').config(function($stateProvider) {
     })
 
     .state('app.private', {
-      url: '/private',
+      url: '/private/:username',
       views: {
         "pageContent": {
-          templateUrl: "templates/private.html",
+          templateUrl: "templates/chat.html",
           controller: "publicChat"
         }
       }

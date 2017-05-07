@@ -21,6 +21,9 @@
       <ion-item menu-close>
         welcome, {{firstName}} {{lastName}}
       </ion-item>
+
+        <ion-toggle ng-model="currentStatus.checked" checked="currentStatus.checked" ng-change="toggleStatus()" toggle-class="toggle-calm">Status ({{currentStatus.text}})</ion-toggle>
+
       <ion-item ui-sref="app.activeUser" menu-close>
       Active User
       </ion-item>

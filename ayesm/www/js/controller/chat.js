@@ -1,7 +1,8 @@
-angular.module('chatApp').controller("publicChat", function($scope,  $ionicScrollDelegate, $timeout, $http, Chat, $state, $rootScope, $ionicLoading) {
+angular.module('chatApp').controller("publicChat", function($scope, $stateParams, $ionicScrollDelegate, $timeout, $http, Chat, $state, $rootScope, $ionicLoading) {
   $scope.chat = {};
-  $scope.activeusersmessages = {};
+  $scope.activeusersmessages = [];
   $scope.currentuser = {};
+  var mydata;
   //Array contains objects [{'username' : username, 'msgContent' : msgContent, 'msgTime' : msgTime}]
   var username = JSON.parse(localStorage.getItem("username"));
 
@@ -9,12 +10,21 @@ angular.module('chatApp').controller("publicChat", function($scope,  $ionicScrol
     // console.log($scope.chat.message);
     if($scope.chat.message != ''){
       //Chat.StartPublicChat(username, $scope.chat.message);
-      socket.emit("public_message", username, $scope.chat.message);
+      if($stateParams.username){
+        socket.emit("private_message", $stateParams.username, $scope.chat.message);
+      }
+      else{
+        socket.emit("public_message", username, $scope.chat.message);
+      }
+
       $scope.chat.message = "";
     }
   }
+  if($stateParams.username){
+    mydata = {'to':$stateParams.username, 'from': username};
+  }
 
-  Chat.getAllMessage().then(function(data) {
+  Chat.getAllMessage(mydata).then(function(data) {
     console.log("data", data);
     $scope.activeusersmessages = data;
     $scope.currentuser = username;
@@ -31,24 +41,4 @@ angular.module('chatApp').controller("publicChat", function($scope,  $ionicScrol
       $ionicScrollDelegate.scrollBottom();
     })
   });
-
-  // private_message
-  // $scope.sendPrivateMessage = function() {
-  //
-  //   Chat.StartPrivateChat(username, $scope.chat.message);
-  //   $scope.chat.message = "";
-  //
-  // }
-  $scope.startPrivate = function(){
-    Chat.getPrivateMessages().then(function(data) {
-      console.log(data);
-      $scope.activeusersmessages = data;
-
-    }, function(err) {
-      console.log(err);
-      console.log(JSON.stringify(err));
-
-    });
-  }
-
 });
