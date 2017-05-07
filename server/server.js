@@ -260,6 +260,7 @@ function saveBulkPublicChat(){
   .then(function(result) {
     // process result
     //console.log(result);
+      publicMessages = {};
   });
 }
 

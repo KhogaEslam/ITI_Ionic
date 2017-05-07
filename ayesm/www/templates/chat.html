@@ -1,5 +1,5 @@
 <ion-view view-title="Chat">
-  <ion-content>
+  <ion-content overflow-scroll="true">
     <div class="list">
 
       <!-- <div class="item item-avatar">
@@ -10,8 +10,8 @@
       </div> -->
 
 
-<!-- {{activeusersmessages.data}} -->
-      <div class="item item-avatar" ng-repeat="activeuser in activeusersmessages">
+<!-- {{activeusersmessages.data}}  -->
+     <div class="item item-avatar" ng-repeat="activeuser in activeusersmessages">
         <img src="img/active.png">
         <h2>{{activeuser.username}}</h2>
         <h2> Message :{{activeuser.msgContent}} </h2>
