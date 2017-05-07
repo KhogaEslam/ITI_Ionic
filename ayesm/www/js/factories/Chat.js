@@ -11,7 +11,7 @@ return {
 
   			}).then(function(res){
   				console.log(res);
-  				if(res.data.message.users.length){
+  				if(res.data.code == 5){
   					def.resolve(res.data)
   				}else{
   					def.reject('there is no data ')
