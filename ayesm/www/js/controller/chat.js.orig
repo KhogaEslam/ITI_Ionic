@@ -15,7 +15,11 @@ angular.module('chatApp').controller("publicChat", function($scope,  $ionicScrol
   }
 
   Chat.getAllMessage().then(function(data) {
+<<<<<<< HEAD
+    console.log(data);
+=======
     console.log("data", data);
+>>>>>>> b621ddf4515ea072fcae525f948bc54f6eed66d2
     $scope.activeusersmessages = data;
     $scope.currentuser = username;
     $ionicScrollDelegate.scrollBottom();
@@ -32,6 +36,12 @@ angular.module('chatApp').controller("publicChat", function($scope,  $ionicScrol
     })
   });
 
+<<<<<<< HEAD
+  $scope.startPrivate = function(){
+    Chat.getPrivateMessages().then(function(data) {
+      console.log(data);
+      $scope.activeusersmessages = data;
+=======
   // private_message
   // $scope.sendPrivateMessage = function() {
   //
@@ -39,10 +49,7 @@ angular.module('chatApp').controller("publicChat", function($scope,  $ionicScrol
   //   $scope.chat.message = "";
   //
   // }
-  $scope.startPrivate = function(){
-    Chat.getPrivateMessages().then(function(data) {
-      console.log(data);
-      $scope.activeusersmessages = data;
+>>>>>>> b621ddf4515ea072fcae525f948bc54f6eed66d2
 
     }, function(err) {
       console.log(err);

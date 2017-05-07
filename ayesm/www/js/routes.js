@@ -47,6 +47,15 @@ angular.module('chatApp').config(function($stateProvider) {
       }
     })
 
+    .state('app.private', {
+      url: '/private',
+      views: {
+        "pageContent": {
+          templateUrl: "templates/private.html",
+          controller: "publicChat"
+        }
+      }
+    })
     .state('app.activeUser', {
       url: '/activeuser',
       views: {
