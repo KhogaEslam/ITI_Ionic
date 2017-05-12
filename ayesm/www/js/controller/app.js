@@ -1,9 +1,12 @@
-var socket=io.connect("http://172.16.5.7:8080/");
+
+var serverUrl = "http://172.16.5.7:8080"; // Server IP Address and port number
+
+var socket=io.connect(serverUrl, {'transports': ['websocket']});
 angular.module('chatApp').controller("app", function($scope,$state, User) {
 
   var username= JSON.parse(localStorage.getItem("username"));
   $scope.currentStatus = {'text':'Online', 'checked': true};
-  $scope.toggleStatus = function(){
+  $scope.toggleStatus = function() {
     $scope.currentStatus.text = ($scope.currentStatus.checked ? 'Online' : 'Offline');
     socket.emit('toggle_status');
     console.log("toggle_status");

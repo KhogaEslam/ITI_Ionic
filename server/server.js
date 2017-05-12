@@ -6,10 +6,11 @@ const bodyParser = require('body-parser');
 const MongoClient = require("mongodb").MongoClient;
 const assert = require('assert');
 const ta = require('time-ago')();
+const offlineUsers = {};
 
 const tableSeperator = "LDBDwfZ1IqecOHJrj2z1";
 
-const url = "mongodb://localhost:27017/chatdb";
+const url = "mongodb://127.0.0.1:27017/chatdb";
 
 var db = null;
 
@@ -27,7 +28,7 @@ var getBulkPublicChat = function(db, callback) {
       if (chat != null) {
         chat.msgDate = ta.ago(chat.msgTime);
         retPublicChat.push(chat);
-        console.log("public chat", chat);
+        // console.log("public chat", chat);
       } else {
          callback();
       }
@@ -55,7 +56,6 @@ MongoClient.connect(url, function(err, dbc) {
     else {
         console.log("Connected successfully");
         db = dbc;
-        server.listen(8080);
         getBulkPublicChat(db, function() {
             publicMessages = retPublicChat;
         });
@@ -100,7 +100,7 @@ function getActiveUsers(username) {
             console.log(key);
             users[key] = {};
             users[key].username = key;
-            users[key].status = "active";
+            users[key].offline = offlineUsers[key];
         }
     }
     return users;
@@ -133,7 +133,7 @@ app.post('/api/login', function(req, res) {
     var user = req.body;
     var promise = userAlreadyExist(user.username, user.password).toArray();
     if(userAlreadyLogged(user.username)) {
-        res.send({"code": 10, "status": "failed", "message": "User already logged in"})
+        res.send({"code":publicMessages, "status": "failed", "message": "User already logged in"})
     }
     else {
         promise.then(function(data) {
@@ -228,7 +228,10 @@ app.post("/api/private_chat", function(req, res) {
     var user = reOrderUsernames([from, to]);
     console.log(user[0] + tableSeperator + user[1])
     db.collection(user[0] + tableSeperator + user[1]).find().toArray().then(function(data) {
-        res.send({"code": 7, "status": "success", "message": {"messages": data}});
+        for(var i = 0; i < data.length; i++) {
+            data[i].msgDate = ta.ago(data[i].msgTime);
+        }
+        res.send(data);
     }, function(err) {
         console.log(err);
         res.send({"code": 6, "status": "failed", "message": err})
@@ -245,8 +248,7 @@ app.post('/api/userdata', function(req, res) {
         console.log("/api/userdata", err);
         res.send({"code": 9, "status": "failed", "message": "Failed to retrieve user"});
     });
-})
-
+});
 
 /**
  * Initiating socket connection
@@ -265,19 +267,26 @@ io.on('connection', function(client) {
         client.broadcast.emit('new_user', getActiveUsers());
     });
 
-    client.on('private_chat_initiated', function(username) {
-        
-    })
-
     /**
      * Sending private message to and from the two users
      */
 
     client.on('private_message', function(username, message) {
-        var users = reOrderUsernames(activeUsers[client.id], username);
-        db.collection(users[0] + tableSeperator + users[1]).insertOne({"msg": message, "msgDate": new Date()}, function(err, res) {
-            io.of('/').to(activeUsers[username].socketId).emit(message);
-            client.emit('msg_received', {"code": 3, "status": "success", "message": message});
+        console.log("User socket information", activeUsers[client.id]);
+        console.log("username", username, ", message", message);
+        var users = reOrderUsernames([activeUsers[client.id].username, username]);
+        console.log(users);
+        var message = {"username": activeUsers[client.id].username, "msgContent": message, "msgTime": new Date()};
+        db.collection(users[0] + tableSeperator + users[1]).insertOne(message, function(err, res) {
+            if(err) {
+                // console.log(err);
+            }
+            else {
+                // console.log(res);
+            }
+            message.msgDate = ta.ago(new Date());
+            io.of('/').to(activeUsers[username].socketId).emit('messages', message);
+            client.emit('messages', message);
         });
 
     });
@@ -298,6 +307,7 @@ io.on('connection', function(client) {
     client.on('logout', function(username) {
         delete activeUsers[client.id];
         delete activeUsers[username];
+        delete offlineUsers[client.id];
         client.broadcast.emit('new_user', getActiveUsers());
         console.log("User", username, "logged out");
         console.log(activeUsers);
@@ -308,9 +318,24 @@ io.on('connection', function(client) {
             delete activeUsers[activeUsers[client.id].username];
         }
         delete activeUsers[client.id];
+        delete offlineUsers[client.id];
         client.broadcast.emit('new_user', getActiveUsers());
         console.log("User disconnected");
         console.log(activeUsers);
+    });
+
+    client.on('toggle_status', function() {
+        var username = activeUsers[client.id].username;
+        console.log("user", username);
+        if(offlineUsers[username]) {
+            console.log("Online");
+            delete offlineUsers[username];
+        }
+        else {
+            console.log("Offline");
+            offlineUsers[username] = true;
+        }
+        client.broadcast.emit('active_users', getActiveUsers());
     })
 })
 /******************************************************************************/
