@@ -21,13 +21,22 @@ Chat.getAllActiveUser({'username': username}).then(function(data){
   $ionicLoading.hide();
 });
 
+socket.on('online_users', function(users) {
+  $timeout(function() {
+    console.log("users", users);
+    delete users[username];
+    $scope.activeusers = users;
+    console.log("$scope.activeusers", $scope.activeusers);
+  });
+});
+
 socket.on('new_user',function(activeusers){
   $timeout(function(){
     console.log("active user4",$scope.activeusers,username);
-  delete activeusers[username];
-  $scope.activeusers = activeusers;
-  console.log("active user",$scope.activeusers);
-});
+    delete activeusers[username];
+    $scope.activeusers = activeusers;
+    console.log("active user",$scope.activeusers);
+  });
 })
 
   });

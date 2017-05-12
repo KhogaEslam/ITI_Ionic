@@ -59,6 +59,9 @@ MongoClient.connect(url, function(err, dbc) {
         getBulkPublicChat(db, function() {
             publicMessages = retPublicChat;
         });
+
+        server.listen(8080);
+
         /*Just for testing*/
         // savePublicChat({'username' : 'username1', 'msgContent' : 'msgContent1', 'msgTime' : 'msgTime1'});
         // savePublicChat({'username' : 'username2', 'msgContent' : 'msgContent2', 'msgTime' : 'msgTime2'});
@@ -104,6 +107,21 @@ function getActiveUsers(username) {
         }
     }
     return users;
+}
+
+function getOnlineUsers(localActiveUsers) {
+    console.log("Inside getOnlineUsersExceptClient");
+    console.log("currentActiveUsers");
+    console.log(JSON.stringify(localActiveUsers, null, 4));
+    for(var user in localActiveUsers) {
+        if(localActiveUsers[user].offline) {
+            console.log(user, localActiveUsers[user].offline, "Offline");
+            delete localActiveUsers[user];
+        }
+    }
+    console.log("Before Returning");
+    console.log(JSON.stringify(localActiveUsers, null, 4));
+    return localActiveUsers;
 }
 
 
@@ -335,7 +353,9 @@ io.on('connection', function(client) {
             console.log("Offline");
             offlineUsers[username] = true;
         }
-        client.broadcast.emit('active_users', getActiveUsers());
+        var online_users = getOnlineUsers(getActiveUsers());
+        console.log(JSON.stringify(online_users, null, 4));
+        client.broadcast.emit('online_users', online_users);
     })
 })
 /******************************************************************************/
