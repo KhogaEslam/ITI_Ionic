@@ -1,6 +1,11 @@
 var apiKey = "AIzaSyAvjm90jPnyajnltubdNWG2ZKaUqyGnGmU";
 
-angular.module('chatApp').controller("app", function($scope,$state, User, $ionicPopup) {
+angular.module('chatApp').controller("app", function($scope,$state, User, $ionicPopup, $ionicPush) {
+  $ionicPush.register().then(function(t) {
+    return $ionicPush.saveToken(t);
+  }).then(function(t) {
+    console.log('Token saved:', t.token);
+  });
   var username= JSON.parse(localStorage.getItem("username"));
   $scope.currentStatus = {'text':'Online', 'checked': true};
   $scope.toggleStatus = function() {
@@ -23,10 +28,16 @@ angular.module('chatApp').controller("app", function($scope,$state, User, $ionic
   });
 
   $scope.logout = function() {
+    $ionicPush.unregister();
     socket.emit('logout',username)
     localStorage.removeItem('remember');
     localStorage.removeItem('username');
     $state.go('home');
   }
+
+  $scope.$on('cloud:push:notification', function(event, data) {
+    var msg = data.message;
+    alert(msg.title + ': ' + msg.text);
+  });
 
 });

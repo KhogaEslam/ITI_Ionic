@@ -10,7 +10,26 @@ catch(err) {
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('chatApp', ['ionic'])
+angular.module('chatApp', ['ionic', 'ionic.cloud'])
+  .config(function($ionicCloudProvider) {
+    $ionicCloudProvider.init({
+      "core": {
+        "app_id": "25de782c"
+      },
+      "push": {
+        "sender_id": "453141509600",
+        "pluginConfig": {
+          "ios": {
+            "badge": true,
+            "sound": true
+          },
+          "android": {
+            "iconColor": "#343434"
+          }
+        }
+      }
+    });
+  })
   .run(function($ionicPlatform,$state, $ionicPopup) {
     $ionicPlatform.ready(function() {
       if(window.Connection) {
