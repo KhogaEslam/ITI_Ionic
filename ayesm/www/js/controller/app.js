@@ -1,10 +1,6 @@
-
-var serverUrl = "http://172.16.5.7:8080"; // Server IP Address and port number
-
 var apiKey = "AIzaSyAvjm90jPnyajnltubdNWG2ZKaUqyGnGmU";
 
 angular.module('chatApp').controller("app", function($scope,$state, User, $ionicPopup) {
-
   var username= JSON.parse(localStorage.getItem("username"));
   $scope.currentStatus = {'text':'Online', 'checked': true};
   $scope.toggleStatus = function() {

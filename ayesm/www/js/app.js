@@ -1,9 +1,7 @@
 // Ionic Starter App
-
 var serverUrl = "http://172.16.5.7:8080"; // Server IP Address and port number
-
 try {
-  var socket=io.connect(serverUrl, {'transports': ['websocket']});
+  var socket = io.connect(serverUrl, {'transports': ['websocket']});
 }
 catch(err) {
     // alert('Server Down!\n\n' + err);
@@ -13,7 +11,6 @@ catch(err) {
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 angular.module('chatApp', ['ionic'])
-
   .run(function($ionicPlatform,$state, $ionicPopup) {
     $ionicPlatform.ready(function() {
       if(window.Connection) {
