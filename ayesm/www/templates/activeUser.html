@@ -2,7 +2,7 @@
   <ion-content overflow-scroll="true">
 <div class="list">
 
-<a class="item item-avatar" ui-sref='privateChat({"username":activeuser})' ng-repeat="(key,value) in activeusers">
+<a ng-if="!value.offline" class="item item-avatar" ui-sref='app.private({"username": key})' ng-repeat="(key,value) in activeusers">
   <img src="img/active.png">
   <h2>{{key}}</h2>
 
